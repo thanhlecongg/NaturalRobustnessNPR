@@ -1,6 +1,6 @@
 ## Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing
 
-This repository contains the data and code for the paper "Evaluating Program Repair with Semantic-Preserving Transformations: A Naturalness Assessment", published at ACM Transactions on Software Engineering and Methodology.
+This repository contains the data and code for the paper "Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing", published at ACM Transactions on Software Engineering and Methodology.
 
 ### Data
 Our data is published using Figshare, please download data from [here](https://figshare.com/s/05c50e7e0bd021ed16b3) and put it into the folder data before running experiments.
