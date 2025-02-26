@@ -82,3 +82,20 @@ Our transformation data is stored in `data/repair_dataset/naturaltransform`. Thi
 
 #### Naturalness Evaluation
 Cross-Entropy values for original and transformed programs are stored in `data/entropy`. These results are generated using our tool CodeNaturalnessEvaluator `tools/CodeNaturalnessEvaluator`. Please following the instructions in `tools/CodeNaturalnessEvaluator/README.md` to reproduce these results.
+
+## Citations
+Please cite the following article if you find our research including findings, datasets and tools to be useful:
+
+@article{10.1145/3716167,
+author = {Le-Cong, Thanh and Nguyen, Thanh-Dat and Le, Bach and Murray, Toby},
+title = {Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing},
+year = {2025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+issn = {1049-331X},
+url = {https://doi.org/10.1145/3716167},
+doi = {10.1145/3716167},
+note = {Just Accepted},
+journal = {ACM Trans. Softw. Eng. Methodol.},
+month = feb,
+}
