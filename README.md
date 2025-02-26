@@ -78,7 +78,7 @@ Data collected from our repair experiments is in the `data/plausible_patches` fo
 - This results are obtained by running [Cerberus](https://github.com/nus-apr/cerberus) (SHA: baed4074cdc1b0ff6b6c99619dbe70f508ec4004, dev-branch) on repair dataset in `data/repair_dataset`. Please following instructions in Cerberus and using configurations presented in the paper to reproduce these results.
 
 #### Transformations Data
-Our transformation data is stored in `data/repair_dataset/naturaltransform`. This dataset is generated based on our tool, CodeTransform `tools/CodeTransform` which is extended based on [SPAT](https://github.com/Santiago-Yu/SPAT). Please following the instructions in `tools/CodeTransform/README.md` to reproduce this dataset. 
+Our transformation data is stored in `data/repair_dataset/naturaltransform`. This dataset is generated based on our tool, CodeTransform `tools/CodeTransform` which is extended based on [SPAT](https://github.com/Santiago-Yu/SPAT). Please following the instructions in `tools/CodeTransform/README.md` to reproduce this dataset. If you are interested in our code transformation tool, please access the lastest version at this [link](https://github.com/thanhlecongg/NaturalCodeTransformer)
 
 #### Naturalness Evaluation
 Cross-Entropy values for original and transformed programs are stored in `data/entropy`. These results are generated using our tool CodeNaturalnessEvaluator `tools/CodeNaturalnessEvaluator`. Please following the instructions in `tools/CodeNaturalnessEvaluator/README.md` to reproduce these results.
@@ -88,16 +88,16 @@ Please cite the following article if you find our research including findings, d
 
 ```
 @article{10.1145/3716167,
-author = {Le-Cong, Thanh and Nguyen, Thanh-Dat and Le, Bach and Murray, Toby},
-title = {Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing},
-year = {2025},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-issn = {1049-331X},
-url = {https://doi.org/10.1145/3716167},
-doi = {10.1145/3716167},
-note = {Just Accepted},
-journal = {ACM Trans. Softw. Eng. Methodol.},
-month = feb,
+    author = {Le-Cong, Thanh and Nguyen, Thanh-Dat and Le, Bach and Murray, Toby},
+    title = {Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing},
+    year = {2025},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    issn = {1049-331X},
+    url = {https://doi.org/10.1145/3716167},
+    doi = {10.1145/3716167},
+    note = {Just Accepted},
+    journal = {ACM Trans. Softw. Eng. Methodol.},
+    month = feb,
 }
 ```
