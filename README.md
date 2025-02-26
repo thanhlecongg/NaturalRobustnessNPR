@@ -86,6 +86,7 @@ Cross-Entropy values for original and transformed programs are stored in `data/e
 ## Citations
 Please cite the following article if you find our research including findings, datasets and tools to be useful:
 
+```
 @article{10.1145/3716167,
 author = {Le-Cong, Thanh and Nguyen, Thanh-Dat and Le, Bach and Murray, Toby},
 title = {Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing},
@@ -99,3 +100,4 @@ note = {Just Accepted},
 journal = {ACM Trans. Softw. Eng. Methodol.},
 month = feb,
 }
+```
