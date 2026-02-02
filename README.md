@@ -1,23 +1,49 @@
-## Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing
+# Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing
 
 This repository contains the data and code for the paper "Towards Reliable Evaluation of Neural Program Repair with Natural Robustness Testing", published at ACM Transactions on Software Engineering and Methodology.
 
-### Data
+## Data
 Our data is published using Figshare, please download data from [here](https://figshare.com/s/05c50e7e0bd021ed16b3) and put it into the folder data before running experiments.
 
-### Replicating results in the Paper
-To replicate results of our RQ1, please use the following command:
+## Replicating results in the Paper
+### RQ2
+To replicate results of our RQ2 (Table 11--14), please use the following command:
 ```
-python3 rq1.py 
+python3 rq2.py 
 ```
-To replicate results of our RQ2, please use the following command:
+
+### RQ3
+To draw Figure 3, please use the following command:  
+
 ```
-python3 rq2_1.py 
-python3 rq2_2.py 
+python3 rq3_1.py 
 ```
-To replicate results of our RQ3, please use the following command:
+
+To draw Figure 4, please use the following command:  
 ```
-python3 rq3.py 
+python3 rq3_21.py 
+```
+
+To draw Figure 5, please use the following command:  
+```
+python3 rq3_22.py 
+```
+
+To draw Figure 6 and reproduce Table 16, please use the following command:
+```
+python3 rq3_3.py 
+```
+
+### RQ4
+To replicate results of our RQ4 (Table 17--19), please use the following command:
+```
+python3 rq4.py 
+```
+
+### RQ5
+To replicate results of our RQ4 (Table 20 and Figure 7), please use the following command:
+```
+python3 rq5.py 
 ```
 
 ### Supplementary Materials
@@ -78,10 +104,10 @@ Data collected from our repair experiments is in the `data/plausible_patches` fo
 - This results are obtained by running [Cerberus](https://github.com/nus-apr/cerberus) (SHA: baed4074cdc1b0ff6b6c99619dbe70f508ec4004, dev-branch) on repair dataset in `data/repair_dataset`. Please following instructions in Cerberus and using configurations presented in the paper to reproduce these results.
 
 #### Transformations Data
-Our transformation data is stored in `data/repair_dataset/naturaltransform`. This dataset is generated based on our tool, CodeTransform `tools/CodeTransform` which is extended based on [SPAT](https://github.com/Santiago-Yu/SPAT). Please following the instructions in `tools/CodeTransform/README.md` to reproduce this dataset. If you are interested in our code transformation tool, please access the lastest version at this [link](https://github.com/thanhlecongg/NaturalCodeTransformer)
+Our transformation data is stored in `data/repair_dataset/naturaltransform`. This dataset is generated based on our tool, CodeTransform `tools/CodeTransform` which is extended based on [SPAT](https://github.com/Santiago-Yu/SPAT). Please following the instructions in `tools/CodeTransform/README.md` to reproduce this dataset. If you are interested in our code transformation tool, please access the lastest version at this [link](https://github.com/thanhlecongg/NaturalCodeTransformer).
 
 #### Naturalness Evaluation
-Cross-Entropy values for original and transformed programs are stored in `data/entropy`. These results are generated using our tool CodeNaturalnessEvaluator `tools/CodeNaturalnessEvaluator`. Please following the instructions in `tools/CodeNaturalnessEvaluator/README.md` to reproduce these results.
+Cross-Entropy values for original and transformed programs are stored in `data/entropy`. These results are generated using our tool CodeNaturalnessEvaluator `tools/CodeNaturalnessEvaluator`. Please following the instructions in `tools/CodeNaturalnessEvaluator/README.md` to reproduce these results. If you are interested in our naturalness assessment metric, please access the lastest version at this [link](https://github.com/thanhlecongg/NaturalCodeTransformer/blob/main/CodeNaturalnessEvaluator/evaluator.py).
 
 ## Citations
 Please cite the following article if you find our research including findings, datasets and tools to be useful:

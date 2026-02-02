@@ -73,7 +73,7 @@ def sns_box_plot(df, metric):
     plt.legend()
     plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.13),
         ncol=2, fancybox=True, shadow=True, fontsize="14")
-    plt.savefig("data/figures/rq3_{}.png".format(metric), dpi=300)
+    plt.savefig("data/figures/fig7_{}.png".format(metric), dpi=300)
     plt.clf()
     
 def box_plot(data, labels, name):
@@ -232,25 +232,19 @@ def main():
             probability_ce[model][naturalness_type] = [1 - (v - min) / (max - min) for v in probability_ce[model][naturalness_type]]
     df = pd.DataFrame(results)
     
-    print("==> Box-Plot of CE (Figures 3a): Please see results in data/figures/rq3_ce.png")
+    print("==> Box-Plot of CE (Figures 3a): Please see results in data/figures/fig7_ce.png")
     sns_box_plot(df, "ce")
-    print("==> Box-Plot of RNC (Figures 3b):Please see results in data/figures/rq3_rnc.png")
+    print("==> Box-Plot of RNC (Figures 3b):Please see results in data/figures/fig7_rnc.png")
     sns_box_plot(df, "rnc")
-    print("==> Box-Plot of NC (Figures 3b):Please see results in data/figures/rq3_rnc.png")
-    sns_box_plot(df, "nc")
     
     print("==> Classification Results - Table 7")
     for model in rnc_results:
-        assert len(rnc_results[model]["Natural"]) == 693
-        assert len(rnc_results[model]["Unnatural"]) == 227
-        assert len(rnc_results[model]["Likely Unnatural"]) == 240
-        assert len(rnc_results[model]["Likely Natural"]) == 18
+        assert len(rnc_results[model]["Natural"]) == 641
+        assert len(rnc_results[model]["Unnatural"]) == 214
+        assert len(rnc_results[model]["Likely Unnatural"]) == 227
+        assert len(rnc_results[model]["Likely Natural"]) == 16
         _, auc, _, _, _ = evaluations_metrics(probability[model]["Natural"], probability[model]["Unnatural"])
         print(f"[RNC] AUC of {model}: {auc}")
-        
-    for model in rnc_results:
-        _, auc, _, _, _ = evaluations_metrics(probability_nc[model]["Natural"], probability_nc[model]["Unnatural"])
-        print(f"[NC] AUC of {model}: {auc}")
     
     for model in rnc_results:
         _, auc, _, _, _ = evaluations_metrics(probability_ce[model]["Natural"], probability_ce[model]["Unnatural"])

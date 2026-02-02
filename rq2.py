@@ -7,6 +7,7 @@ from krippendorff import alpha
 import os
 import pandas as pd
 from scipy import stats
+from prettytable import PrettyTable
 
 def agreement(data):
     print(data.shape)
@@ -55,7 +56,16 @@ def main():
     # Read the JSON data from the file and load it into a dictionary
     with open(file_name, "r") as json_file:
         data = json.load(json_file)
-    
+    valid_bugs = {}
+    for transform in ["naming", "expression", "statement"]:
+        with open(f"data/valid_bugs/{transform}.txt", "r") as f:
+            valid_bugs[transform] = []
+            for line in f:
+                valid_bugs[transform].append(int(line))
+
+    with open("data/valid_bugs/original.txt", "r") as f:
+        valid_bugs["original"] = f.read().split("\n")
+
     final = [[],[],[],[],[]]
     bug_info = []
     average_cc_score = []
@@ -63,6 +73,8 @@ def main():
     time = [[],[],[],[],[]]
     for level in data:
         for bug in data[level]:
+            if int(bug) not in valid_bugs[level]:
+                continue
             bug_info.append("{}_{}".format(level, bug))
             cc_score = 0
             cr_score = 0
@@ -88,9 +100,9 @@ def main():
         for idx, bug in enumerate(bug_info):
             f.write("{}\t{}\t{}\n".format(bug, average_cc_score[idx], average_cr_score[idx]))
     
-    naming_range = np.array(range(906))
-    expression_range = np.array(range(906, 1061))
-    statement_range = np.array(range(1061, 1178))
+    naming_range = np.array(range(854))
+    expression_range = np.array(range(854, 994))
+    statement_range = np.array(range(994, 1098))
     
     final = np.array(final)
     df = pd.DataFrame(final.transpose())
@@ -98,7 +110,7 @@ def main():
     results = final.sum(axis=0)
     time = np.array(time)
     bug_info = np.array(bug_info)
-    
+
     # Some assertion
     for bug in bug_info[naming_range]:
         assert bug.startswith("naming")
@@ -110,7 +122,7 @@ def main():
         assert bug.startswith("statement")
         
     print("----------------------------------------------------------------------")
-    print("==> [RQ1.1 - Section 4.1.2] Completion Time")
+    print("==> [RQ2.1 - Section 5.1.1] Completion Time")
     _99th_percentile_time = np.percentile(time, 99)
     print("=> Overal")
     print("+ 99% Percentile: " + str(round(_99th_percentile_time, 2)))
@@ -120,36 +132,20 @@ def main():
     
     naming_time = time[:, naming_range]
     naming_time = naming_time[naming_time < _99th_percentile_time]
-    print("=> Table 1: Time taken by different transformation levels")
-    print("+++ Naming-leve;")
-    print("+ Average Naming-level Completion Time: " + str(np.mean(naming_time)))
-    print("+ STD Naming-level Completion Time: " + str(np.std(naming_time)))
-    print("++++++")
     expression_time = time[:, expression_range]
     expression_time = expression_time[expression_time < _99th_percentile_time]
-    print("+++ Expression-level:")
-    print("+ Average Expression-level Completion Time: " + str(np.mean(expression_time)))
-    print("+ STD Expression-level Completion Time: " + str(np.std(expression_time)))
-    print("++++++")
     statement_time = time[:, statement_range]
     statement_time = statement_time[statement_time < _99th_percentile_time]
-    print("+++ Statement-level:")
-    print("+ Average Statement-level Completion Time: " + str(np.mean(statement_time)))
-    print("+ STD Statement-level Completion Time: " + str(np.std(statement_time)))
-    print("++++++")
+    
+    print("=> Table 11: Time taken by different transformation levels")
+    table_11 = PrettyTable()
+    table_11.field_names = ['Transformation Level', 'Average Time', 'STD']
+    table_11.add_row(['Naming', np.mean(naming_time), np.std(naming_time)])
+    table_11.add_row(['Expression', np.mean(expression_time), np.std(expression_time)])
+    table_11.add_row(['Statement', np.mean(statement_time), np.std(statement_time)])
+    print(table_11)
 
-    print("+++ Statistical Tests:")
-    _, p_value, effect_size = MWW(expression_time, statement_time)
-    print("MWW Test: p-value: {}, effect size: {}".format(p_value, effect_size))
-
-    _, p_value, effect_size = MWW(naming_time, statement_time)
-    print("MWW Test: p-value: {}, effect size: {}".format(p_value, effect_size))
-
-    _, p_value, effect_size = MWW(naming_time, expression_time)
-    print("MWW Test: p-value: {}, effect size: {}".format(p_value, effect_size))
-    print("++++++")
-
-    print("=> Table 2: Time taken by high agreement vs high disgareement cases")
+    print("=> Table 12: Time taken by high agreement vs high disgareement cases")
     natural_ids = np.where(results <=1)[0]
     write_ids_to_file(bug_info[natural_ids], "natural_ids.txt")
     unnatural_ids = np.where(results >=4)[0]
@@ -168,35 +164,39 @@ def main():
 
     disagreement_time = time[:, disagrement_ids]
     disagreement_time = disagreement_time[disagreement_time < _99th_percentile_time]
-    print("+++ Agreement:")
-    print("Average time for agreement: " + str(np.mean(agreement_time)))
-    print("STD time for agreement: " + str(np.std(agreement_time)))
-    print("++++++")
-    print("+++ Disagreement:")
-    print("Average time for disagreement: " + str(np.mean(disagreement_time)))
-    print("STD time for disagreement: " + str(np.std(disagreement_time)))
-    print("++++++")
-    print("+++ Statistical Tests:")
-    _, p_value, effect_size = MWW(agreement_time, disagreement_time)
-    print("MWW Test: p-value: {}, effect size: {}".format(p_value, effect_size))
+    
+    table_12 = PrettyTable()
+    table_12.field_names = ['Category', 'Average Time', 'STD']
+    table_12.add_row(['Agreement', np.mean(agreement_time), np.std(agreement_time)])
+    table_12.add_row(['Disagreement', np.mean(disagreement_time), np.std(disagreement_time)])
+    print(table_12)
     
     print("----------------------------------------------------------------------")
-    print("==> [RQ1.2 - Section 4.1.3] Agreement")
-    print("=> Overall Agreement")
-    print("+ Data points that are considered as natural by a all annotators: {}({}%)".format(len(results[results == 0]), round(len(results[results == 0])/len(results) * 100, 2)))
-    print("+ Data points that are considered as unnatural by a all annotators: {}({}%)".format(len(results[results == 5]), round(len(results[results == 5])/len(results) * 100, 2)))
-    print("+ Data points that are considered as natural by a 4/5 annotators: {}({}%)".format(len(results[results <= 1]), round(len(results[results <= 1])/len(results) * 100, 2)))
-    print("+ Data points that are considered as unnatural by a 4/5 annotators: {}({}%)".format(len(results[results >= 4]), round(len(results[results >= 4])/len(results) * 100, 2)))
-    print("+ Data points that are considered as natural by a 3/5 annotators: {}({}%)".format(len(results[results == 2]), round(len(results[results == 2])/len(results) * 100, 2)))
-    print("+ Data points that are considered as unnatural by a 3/5 annotators: {}({}%)".format(len(results[results == 3]), round(len(results[results == 3])/len(results) * 100, 2)))
-    print("+ Data points that are considered as not natural by a majority of Annotators: {}%".format(round(len(results[results >= 3])/len(results) * 100, 2)))
-    print("+ Data points that are considered as not natural by a at least one of Annotators: {}%".format(round(len(results[results >= 1])/len(results) * 100, 2)))
+    print("==> [RQ2.2 - Section 5.1.2] Agreement")
+    print("=> Table 13: Agreement Levels of Participants.")
     
-    print("=> Inter-rater Agreement Metrics")
-    print("+ Fleiss's agreement: " + str(round(agreement(final), 2)))
+    table_13 = PrettyTable()
+    table_13.field_names = ['Agreement Level', 'Natural', 'Unnatural', 'Total']
+    
+    full_agreement_natural = len(results[results == 0])
+    full_agreement_unnatural = len(results[results == 5])
+    full_agreement_total = full_agreement_natural + full_agreement_unnatural
+    
+    high_agreement_natural = len(results[results <= 1]) 
+    high_agreement_unnatural = len(results[results >= 4]) 
+    high_agreement_total = high_agreement_natural + high_agreement_unnatural
+    
+    disagreement_natural = len(results[results == 2])
+    disagreement_unnatural = len(results[results == 3])
+    disagreement_total = disagreement_natural + disagreement_unnatural
+    
+    table_13.add_row(['Full Agreement', full_agreement_natural, full_agreement_unnatural, full_agreement_total])
+    table_13.add_row(['High Agreement', high_agreement_natural, high_agreement_unnatural, high_agreement_total])
+    table_13.add_row(['Disagreement', disagreement_natural, disagreement_unnatural, disagreement_total])
+    print(table_13)
     
     print("----------------------------------------------------------------------")
-    print("==> [RQ1.3 - Section 4.1.4] Naturalness Ratio")
+    print("==> [RQ2.3 - Section 5.1.4] Naturalness Ratio")
     naming_naturalness = calculate_naturalness(results[naming_range])
     expression_naturalness = calculate_naturalness(results[expression_range])
     statemet_naturalness = calculate_naturalness(results[statement_range])
@@ -208,45 +208,19 @@ def main():
     statement_values =  np.array([len(i) for i in statemet_naturalness])
     full_values =  np.array([len(i) for i in full_naturalness])
 
-    print("=> Table 3: Naturalness Ratio")
-    print("+ Naming-level: " + str(naming_values))
-    print("+ Expression-level: " + str(expression_values))
-    print("+ Statement-level: " + str(statement_values))
-    print("+ Full-level: " + str(full_values))
+    print("=> Table 14: Naturalness Ratio")
+    table_14 = PrettyTable()
+    table_14.field_names = ['Level', 'Highly Natural (>=4)', 'Neutral (3)', 'Neutral (2)', 'Highly Unnatural (<=1)']
+    table_14.add_row(['Naming', naming_values[0], naming_values[1], naming_values[2], naming_values[3]])
+    table_14.add_row(['Expression', expression_values[0], expression_values[1], expression_values[2], expression_values[3]])
+    table_14.add_row(['Statement', statement_values[0], statement_values[1], statement_values[2], statement_values[3]])
+    table_14.add_row(['Overall', full_values[0], full_values[1], full_values[2], full_values[3]])
+    print(table_14)
     
-    assert naming_values.sum() == 906
-    assert expression_values.sum() == 155
-    assert statement_values.sum() == 117
-    assert full_values.sum() == 1178
-    
-    naming_values = np.array(naming_values) / 906 * 100
-    expression_values = np.array(expression_values) / 155 * 100
-    statement_values = np.array(statement_values) / 117 * 100
-    full_values = np.array(full_values) / 1178 * 100
+    assert naming_values.sum() == 854
+    assert expression_values.sum() == 140
+    assert statement_values.sum() == 104
+    assert full_values.sum() == 1098
 
-    values = np.array([naming_values, expression_values, statement_values, full_values])
-    values = np.round(values, 1)
-
-    fig, ax = plt.subplots(figsize=(5.5, 3))
-        
-    bars1 = ax.bar(categories, values[:, 0], label='Unnatural', edgecolor="black", color="tab:orange")
-    ax.bar_label(bars1, label_type='center')
-
-    bars2 = ax.bar(categories, values[:, 1] + values[:, 2], bottom=values[:, 0], label='Likely Natural/Unnatural', edgecolor="black", color="tab:gray")
-    ax.bar_label(bars2, label_type='center')
-    bars3 = ax.bar(categories, values[:, 3], bottom=values[:, 0] + values[:, 1] + values[:, 2], label='Natural', edgecolor="black", color="tab:green")
-    ax.bar_label(bars3, label_type='center')
-    ax.legend(title='Categories', bbox_to_anchor=(1.05, 1), loc='upper left')
-
-    plt.ylabel('Proportion (%)', fontsize=12)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.legend()
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.13),
-          ncol=3, fancybox=True, shadow=True)
-    print("=> Please see results in data/figures/rq1_naturalness.png")
-    plt.savefig("data/figures/rq1_naturalness.png", dpi=300)
 if __name__ == "__main__":
     main()
-
-
